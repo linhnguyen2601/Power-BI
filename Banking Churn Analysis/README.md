@@ -58,8 +58,83 @@ Bank DOJ: Ngày mở tài khoản
 - Tạo bảng Customer gồm CustomerID & Surname
 - Tạo bảng Exit Retain gồm Exit_Category & Exit ID
 - Tạo bảng Location gồm GeographyLocation & Location ID
-  
+
+![image](https://github.com/user-attachments/assets/e3d50fd8-d72e-4945-a93c-ed0e01806b73)
+
+Tạo bảng DIM_DATE
+
+```
+DIM_DATE = ADDCOLUMNS( CALENDAR( FIRSTDATE(Bank_Churn[Bank DOJ]),
+ LASTDATE(Bank_Churn[Bank DOJ]) ),
+  "Day", DAY([Date]),
+  "Month", MONTH([Date]),
+  "Year", YEAR([Date]) ,
+   "Month Name",
+   FORMAT([Date], "MMM") )
+```
+Tạo cột Credit Type:
+
+```
+Credit type = SWITCH(TRUE(),
+ Bank_Churn[CreditScore] >= 800 && Bank_Churn[CreditScore] <= 850, "Excellent" ,
+ Bank_Churn[CreditScore] >= 740 && Bank_Churn[CreditScore] <= 799, "Very good" ,
+ Bank_Churn[CreditScore] >= 670 && Bank_Churn[CreditScore] <= 739, "Good" ,
+ Bank_Churn[CreditScore] >= 580 && Bank_Churn[CreditScore] <= 699, "Fair" ,
+ Bank_Churn[CreditScore] >= 300 && Bank_Churn[CreditScore] <= 579, "Poor" ,
+ Bank_Churn[CreditScore] < 300, "Very Poor" )
+```
+
 ## Tạo các Measures
+
+Measure Active Customer đếm tất cả các khách hàng là Active Member
+
+```
+Acitive customers = CALCULATE(COUNT(Bank_Churn[CustomerId]), 'Active Customer'[ActiveCategory] = "Active Member")
+```
+
+Measure CustomerID đếm các khách hàng trong bảng BankChurn
+
+```
+Total customer = DISTINCTCOUNT(Bank_Churn[CustomerId])
+```
+
+Measure Inactive Customer
+
+```
+Inactive customer = [Total customer] - [Acitive customers]
+```
+
+Measure Credit Card đếm các KH là Credit Card Holder
+
+```
+Credit Card holder = CALCULATE(COUNT(Bank_Churn[CustomerId]), Credit_card[Category] = "credit card holder")
+```
+
+Measure đếm các KH không có Credit Card
+
+```
+Non Credit Card holder = CALCULATE(COUNT(Bank_Churn[CustomerId]), Credit_card[Category] = "non credit card holder")
+```
+
+Đếm các KH exit
+```
+Exit Customers = CALCULATE([Total customer], 'Exit Retain'[ExitCategory] = "Exit")
+```
+
+Đếm các KH retain:
+```
+Retain Customer = CALCULATE([Total customer], 'Exit Retain'[ExitCategory] = "Retain")
+```
+
+```
+Previous month exit customer = CALCULATE([Exit Customers], PREVIOUSMONTH(DIM_DATE[Date]))
+```
+
+
+Tạo measure tính churn rate
+```
+Churn rate = [Inactive customer]/[Total customer]
+```
 
 ## Tạo cột Credit Type
 
