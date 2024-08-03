@@ -10,6 +10,8 @@ Thông qua việc phân tích dữ liệu và đưa ra những insights cụ th�
 
  ## Data Dictionary:
 
+Dataset gồm 10,000 dòng:
+
  CustomerId: chứa các giá trị ngẫu nhiên và không ảnh hưởng đến việc khách hàng rời khỏi ngân hàng. 
 
 Surname: Họ của khách hàng không ảnh hưởng đến quyết định rời khỏi ngân hàng của họ. 
@@ -49,3 +51,17 @@ Estimated Salary: Tương tự như số dư, những người có mức lương
 Exited: Khách hàng có rời ngân hàng hay không. (Retain, Exit) 
 
 Bank DOJ: Ngày mở tài khoản 
+
+## Data Model: xây dựng bảng Dim, bảng Fact
+- Tạo bảng Active Customer gồm cột ActiveCategory & ID
+- Tạo bảng Credit Card gồm cột Credit & ID
+- Tạo bảng Customer gồm CustomerID & Surname
+- Tạo bảng Exit Retain gồm Exit_Category & Exit ID
+- Tạo bảng Location gồm GeographyLocation & Location ID
+  
+## Tạo các Measures
+
+## Tạo cột Credit Type
+
+
+
